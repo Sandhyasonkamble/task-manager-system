@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sandhya.taskmanager.entity.User;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import com.sandhya.taskmanager.dto.RegisterRequest;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -18,9 +20,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public User registerUser(@RequestBody User user) {
-
-        return userService.registerUser(user);
-
+    public User registerUser(@Valid @RequestBody RegisterRequest request) {
+        return userService.registerUser(request);
     }
 }
