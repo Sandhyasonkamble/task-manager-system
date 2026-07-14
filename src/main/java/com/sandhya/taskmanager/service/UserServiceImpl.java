@@ -12,17 +12,22 @@ import com.sandhya.taskmanager.dto.RegisterResponse;
 import com.sandhya.taskmanager.dto.LoginRequest;
 import com.sandhya.taskmanager.dto.LoginResponse;
 
+import com.sandhya.taskmanager.security.JwtService;
+
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public UserServiceImpl(UserRepository userRepository,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,
+                           JwtService jwtService) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
     @Override
     public RegisterResponse registerUser(RegisterRequest request) {
@@ -58,10 +63,11 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Invalid email or password");
         }
 
+        String token = jwtService.generateToken(user.getEmail());
+
         LoginResponse response = new LoginResponse();
-        response.setId(user.getId());
-        response.setName(user.getName());
-        response.setEmail(user.getEmail());
+
+        response.setToken(token);
         response.setMessage("Login successful");
 
         return response;
